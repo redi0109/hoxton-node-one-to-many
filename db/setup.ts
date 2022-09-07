@@ -30,6 +30,10 @@ const museums = [
     },
 ]
 
+const dropMuseumsTables = db.prepare(`
+DROP TABLE IF EXISTS museums
+`).run()
+
 const createMoseumsTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS museums(
     id INTEGER,
@@ -40,3 +44,11 @@ CREATE TABLE IF NOT EXISTS museums(
 `);
 
 createMoseumsTable.run();
+
+const createMoseum = db.prepare(`
+INSERT INTO museums (name, city) VALUES (@name, @city);
+`)
+
+for(let museum of museums){
+createMoseum.run(museum)
+}

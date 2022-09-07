@@ -121,29 +121,37 @@ const works = [
   },
 ];
 
-const dropWorksTable = db.prepare(`
+const dropWorksTable = db
+  .prepare(
+    `
 DROP TABLE IF EXISTS works
-`).run()
-
+`
+  )
+  .run();
 
 const createWorksTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS works(
     id INTEGER,
     name TEXT NOT NULL,
     picture TEXT NOT NULL,
+    workId INTEGER NOT NULL,
     PRIMARY KEY (id)
 );
 `);
 createWorksTable.run();
 
-const deleteAllWorks = db.prepare(`
+const deleteAllWorks = db
+  .prepare(
+    `
 DELETE FROM works
-`).run()
+`
+  )
+  .run();
 
 const createWork = db.prepare(`
-INSERT INTO works (name, picture) VALUES (@name, @picture)
-`)
+INSERT INTO works (name, picture, workId) VALUES (@name, @picture, @workId)
+`);
 
-for (let work of works){
-    createWork.run(work);
+for (let work of works) {
+  createWork.run(work);
 }

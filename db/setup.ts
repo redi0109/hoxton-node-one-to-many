@@ -51,7 +51,7 @@ DROP TABLE IF EXISTS museums
   )
   .run();
 
-const createMoseumsTable = db.prepare(`
+const createMuseumsTable = db.prepare(`
 CREATE TABLE IF NOT EXISTS museums(
     id INTEGER,
     name TEXT NOT NULL,
@@ -60,19 +60,19 @@ CREATE TABLE IF NOT EXISTS museums(
 )
 `);
 
-createMoseumsTable.run();
+createMuseumsTable.run();
 
 const deleteAllMuseums = db.prepare(`
 DELETE FROM museums;
 `);
 deleteAllMuseums.run();
 
-const createMoseum = db.prepare(`
+const createMuseum = db.prepare(`
 INSERT INTO museums (name, city) VALUES (@name, @city);
 `);
 
 for (let museum of museums) {
-  createMoseum.run(museum);
+  createMuseum.run(museum);
 }
 
 const works: Work[] = [

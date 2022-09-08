@@ -1,31 +1,43 @@
 import express from "express";
-import cors from 'cors'
+import cors from "cors";
 import Database from "better-sqlite3";
 
-const db = Database('./db/data.db', {verbose: console.log})
-const app = express()
-app.use(cors())
-app.use(express.json())
+const db = Database("./db/data.db", { verbose: console.log });
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-const port = 4000
+const port = 4000;
 
 const getMuseums = db.prepare(`
 SELECT * FROM museums;
-`)
+`);
 
-app.get('/museums', (req, res) => {
-const museums = getMuseums.all()
-res.send(museums)
-})
+const getMuseumById = db.prepare(`
+SELECT * FROM museums WHERE id=?;
+`);
 
-app.get('/museums/:id', (req, res) => {
-    
-})
+const getWorksForMuseum = db.prepare(`
+SELECT * FROM works WHERE museumId = @museumId;
+`);
 
-app.get('/works', (req, res) => {
-    
-})
+app.get("/museums", (req, res) => {
+  const museums = getMuseums.all();
 
-app.get('/works/:id', (req, res) => {
-    
-})
+  for (let museum of museums) {
+    const works = getWorksForMuseum.all({ museumId: museum.id });
+    museum.works = works;
+  }
+
+  res.send(museums);
+});
+
+app.get("/museums/:id", (req, res) => {});
+
+app.get("/works", (req, res) => {});
+
+app.get("/works/:id", (req, res) => {});
+
+app.listen(port, () => {
+  console.log(`app running: https://localhost:${port}`);
+});
